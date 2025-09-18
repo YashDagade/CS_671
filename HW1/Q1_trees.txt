@@ -1,0 +1,212 @@
+\section*{All 18 Zero-Error Trees (Problem 1a.3)}
+
+Dataset:
+\[
+\begin{array}{c c | c}
+x_1 & x_2 & y \\
+\hline
+1 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 0 \\
+\end{array}
+\]
+
+---
+
+\subsection*{Trees with Root = $x_1$}
+
+\textbf{Tree 1}
+\begin{verbatim}
+        [x1?]
+       /     \
+   x1=0       x1=1
+   (1)         (0)
+\end{verbatim}
+
+\textbf{Tree 2 (free leaf=0)}
+\begin{verbatim}
+        [x1?]
+       /     \
+   x1=0       x1=1
+   (1)        [x2?]
+             /     \
+          x2=0     x2=1
+          (0)      (0)
+\end{verbatim}
+
+\textbf{Tree 3 (free leaf=1)}
+\begin{verbatim}
+        [x1?]
+       /     \
+   x1=0       x1=1
+   (1)        [x2?]
+             /     \
+          x2=0     x2=1
+          (0)      (1)
+\end{verbatim}
+
+\textbf{Tree 4 (free leaf=0)}
+\begin{verbatim}
+        [x1?]
+       /     \
+   x1=0       x1=1
+   [x2?]      (0)
+  /     \
+x2=0    x2=1
+ (0)     (1)
+\end{verbatim}
+
+\textbf{Tree 5 (free leaf=1)}
+\begin{verbatim}
+        [x1?]
+       /     \
+   x1=0       x1=1
+   [x2?]      (0)
+  /     \
+x2=0    x2=1
+ (1)     (1)
+\end{verbatim}
+
+\textbf{Tree 6 (0,0=0; 1,1=0)}
+\begin{verbatim}
+        [x1?]
+       /     \
+   x1=0       x1=1
+   [x2?]      [x2?]
+  /     \    /     \
+(0,0) (0,1) (1,0) (1,1)
+ (0)   (1)   (0)   (0)
+\end{verbatim}
+
+\textbf{Tree 7 (0,0=0; 1,1=1)}
+\begin{verbatim}
+        [x1?]
+       /     \
+   x1=0       x1=1
+   [x2?]      [x2?]
+  /     \    /     \
+(0,0) (0,1) (1,0) (1,1)
+ (0)   (1)   (0)   (1)
+\end{verbatim}
+
+\textbf{Tree 8 (0,0=1; 1,1=0)}
+\begin{verbatim}
+        [x1?]
+       /     \
+   x1=0       x1=1
+   [x2?]      [x2?]
+  /     \    /     \
+(0,0) (0,1) (1,0) (1,1)
+ (1)   (1)   (0)   (0)
+\end{verbatim}
+
+\textbf{Tree 9 (0,0=1; 1,1=1)}
+\begin{verbatim}
+        [x1?]
+       /     \
+   x1=0       x1=1
+   [x2?]      [x2?]
+  /     \    /     \
+(0,0) (0,1) (1,0) (1,1)
+ (1)   (1)   (0)   (1)
+\end{verbatim}
+
+---
+
+\subsection*{Trees with Root = $x_2$}
+
+\textbf{Tree 10}
+\begin{verbatim}
+        [x2?]
+       /     \
+   x2=0       x2=1
+   (0)         (1)
+\end{verbatim}
+
+\textbf{Tree 11 (free leaf=0)}
+\begin{verbatim}
+        [x2?]
+       /     \
+   x2=0       x2=1
+   (0)        [x1?]
+             /     \
+          x1=0     x1=1
+          (1)      (0)
+\end{verbatim}
+
+\textbf{Tree 12 (free leaf=1)}
+\begin{verbatim}
+        [x2?]
+       /     \
+   x2=0       x2=1
+   (0)        [x1?]
+             /     \
+          x1=0     x1=1
+          (1)      (1)
+\end{verbatim}
+
+\textbf{Tree 13 (free leaf=0)}
+\begin{verbatim}
+        [x2?]
+       /     \
+   x2=0       x2=1
+   [x1?]      (1)
+  /     \
+x1=0    x1=1
+ (0)     (0)
+\end{verbatim}
+
+\textbf{Tree 14 (free leaf=1)}
+\begin{verbatim}
+        [x2?]
+       /     \
+   x2=0       x2=1
+   [x1?]      (1)
+  /     \
+x1=0    x1=1
+ (1)     (0)
+\end{verbatim}
+
+\textbf{Tree 15 (0,0=0; 1,1=0)}
+\begin{verbatim}
+        [x2?]
+       /     \
+   x2=0       x2=1
+   [x1?]      [x1?]
+  /     \    /     \
+(0,0) (1,0) (0,1) (1,1)
+ (0)   (0)   (1)   (0)
+\end{verbatim}
+
+\textbf{Tree 16 (0,0=0; 1,1=1)}
+\begin{verbatim}
+        [x2?]
+       /     \
+   x2=0       x2=1
+   [x1?]      [x1?]
+  /     \    /     \
+(0,0) (1,0) (0,1) (1,1)
+ (0)   (0)   (1)   (1)
+\end{verbatim}
+
+\textbf{Tree 17 (0,0=1; 1,1=0)}
+\begin{verbatim}
+        [x2?]
+       /     \
+   x2=0       x2=1
+   [x1?]      [x1?]
+  /     \    /     \
+(0,0) (1,0) (0,1) (1,1)
+ (1)   (0)   (1)   (0)
+\end{verbatim}
+
+\textbf{Tree 18 (0,0=1; 1,1=1)}
+\begin{verbatim}
+        [x2?]
+       /     \
+   x2=0       x2=1
+   [x1?]      [x1?]
+  /     \    /     \
+(0,0) (1,0) (0,1) (1,1)
+ (1)   (0)   (1)   (1)
+\end{verbatim}
