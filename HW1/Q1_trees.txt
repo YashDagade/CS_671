@@ -1,30 +1,36 @@
-\section*{All 18 Zero-Error Trees (Problem 1a.3)}
+Agreement 1: This assignment represents my own work. I have worked with the following people and/or LLMs: Brian Mason and Cursor/GPT5 -- though I do want to emphasize that the code even if LLM gernated was based on my reasoning and understanding of the problem and LLMs were simply used to help me write the code in a more efficient manner.
+
+Agreement 2: I understand that if I struggle with this assignment that I will reevaluate whether this is the correct class for me to take. I understand that the homework only gets harder.
+
+
+All 18 trees printed out:
 
 Dataset:
-\[
-\begin{array}{c c | c}
-x_1 & x_2 & y \\
-\hline
-1 & 0 & 0 \\
-0 & 1 & 1 \\
-1 & 0 & 0 \\
-\end{array}
-\]
 
----
+X   Y   Output:
+1 & 0 & 0 
+0 & 1 & 1 
+1 & 0 & 0 
 
-\subsection*{Trees with Root = $x_1$}
+We have two free inputs - 
 
-\textbf{Tree 1}
-\begin{verbatim}
+1 & 1
+0 & 0
+
+where the output could be either 1 or 0 :D
+
+Trees with Root = x_1
+
+Tree1:
+
         [x1?]
        /     \
    x1=0       x1=1
    (1)         (0)
-\end{verbatim}
 
-\textbf{Tree 2 (free leaf=0)}
-\begin{verbatim}
+
+Tree 2 (free leaf=0)
+
         [x1?]
        /     \
    x1=0       x1=1
@@ -32,10 +38,10 @@ x_1 & x_2 & y \\
              /     \
           x2=0     x2=1
           (0)      (0)
-\end{verbatim}
 
-\textbf{Tree 3 (free leaf=1)}
-\begin{verbatim}
+
+Tree 3 (free leaf=1)
+
         [x1?]
        /     \
    x1=0       x1=1
@@ -43,10 +49,10 @@ x_1 & x_2 & y \\
              /     \
           x2=0     x2=1
           (0)      (1)
-\end{verbatim}
 
-\textbf{Tree 4 (free leaf=0)}
-\begin{verbatim}
+
+Tree 4 (free leaf=0)
+
         [x1?]
        /     \
    x1=0       x1=1
@@ -54,10 +60,10 @@ x_1 & x_2 & y \\
   /     \
 x2=0    x2=1
  (0)     (1)
-\end{verbatim}
 
-\textbf{Tree 5 (free leaf=1)}
-\begin{verbatim}
+
+Tree 5 (free leaf=1)
+
         [x1?]
        /     \
    x1=0       x1=1
@@ -65,10 +71,10 @@ x2=0    x2=1
   /     \
 x2=0    x2=1
  (1)     (1)
-\end{verbatim}
 
-\textbf{Tree 6 (0,0=0; 1,1=0)}
-\begin{verbatim}
+
+Tree 6 (0,0=0; 1,1=0)
+
         [x1?]
        /     \
    x1=0       x1=1
@@ -76,10 +82,10 @@ x2=0    x2=1
   /     \    /     \
 (0,0) (0,1) (1,0) (1,1)
  (0)   (1)   (0)   (0)
-\end{verbatim}
 
-\textbf{Tree 7 (0,0=0; 1,1=1)}
-\begin{verbatim}
+
+Tree 7 (0,0=0; 1,1=1)
+
         [x1?]
        /     \
    x1=0       x1=1
@@ -87,10 +93,10 @@ x2=0    x2=1
   /     \    /     \
 (0,0) (0,1) (1,0) (1,1)
  (0)   (1)   (0)   (1)
-\end{verbatim}
 
-\textbf{Tree 8 (0,0=1; 1,1=0)}
-\begin{verbatim}
+
+Tree 8 (0,0=1; 1,1=0)
+
         [x1?]
        /     \
    x1=0       x1=1
@@ -98,10 +104,10 @@ x2=0    x2=1
   /     \    /     \
 (0,0) (0,1) (1,0) (1,1)
  (1)   (1)   (0)   (0)
-\end{verbatim}
 
-\textbf{Tree 9 (0,0=1; 1,1=1)}
-\begin{verbatim}
+
+Tree 9 (0,0=1; 1,1=1)
+
         [x1?]
        /     \
    x1=0       x1=1
@@ -109,22 +115,22 @@ x2=0    x2=1
   /     \    /     \
 (0,0) (0,1) (1,0) (1,1)
  (1)   (1)   (0)   (1)
-\end{verbatim}
 
----
 
-\subsection*{Trees with Root = $x_2$}
 
-\textbf{Tree 10}
-\begin{verbatim}
+Trees with Root = $x_2$ 
+Almost symmetric as before in structure!
+
+Tree 10
+
         [x2?]
        /     \
    x2=0       x2=1
    (0)         (1)
-\end{verbatim}
 
-\textbf{Tree 11 (free leaf=0)}
-\begin{verbatim}
+
+Tree 11 (free leaf=0)
+
         [x2?]
        /     \
    x2=0       x2=1
@@ -132,10 +138,10 @@ x2=0    x2=1
              /     \
           x1=0     x1=1
           (1)      (0)
-\end{verbatim}
 
-\textbf{Tree 12 (free leaf=1)}
-\begin{verbatim}
+
+Tree 12 (free leaf=1)
+
         [x2?]
        /     \
    x2=0       x2=1
@@ -143,9 +149,9 @@ x2=0    x2=1
              /     \
           x1=0     x1=1
           (1)      (1)
-\end{verbatim}
 
-\textbf{Tree 13 (free leaf=0)}
+
+Tree 13 (free leaf=0)
 \begin{verbatim}
         [x2?]
        /     \
@@ -156,8 +162,8 @@ x1=0    x1=1
  (0)     (0)
 \end{verbatim}
 
-\textbf{Tree 14 (free leaf=1)}
-\begin{verbatim}
+Tree 14 (free leaf=1)
+
         [x2?]
        /     \
    x2=0       x2=1
@@ -165,10 +171,10 @@ x1=0    x1=1
   /     \
 x1=0    x1=1
  (1)     (0)
-\end{verbatim}
 
-\textbf{Tree 15 (0,0=0; 1,1=0)}
-\begin{verbatim}
+
+Tree 15 (0,0=0; 1,1=0)
+
         [x2?]
        /     \
    x2=0       x2=1
@@ -176,10 +182,10 @@ x1=0    x1=1
   /     \    /     \
 (0,0) (1,0) (0,1) (1,1)
  (0)   (0)   (1)   (0)
-\end{verbatim}
 
-\textbf{Tree 16 (0,0=0; 1,1=1)}
-\begin{verbatim}
+
+Tree 16 (0,0=0; 1,1=1)
+
         [x2?]
        /     \
    x2=0       x2=1
@@ -187,10 +193,10 @@ x1=0    x1=1
   /     \    /     \
 (0,0) (1,0) (0,1) (1,1)
  (0)   (0)   (1)   (1)
-\end{verbatim}
 
-\textbf{Tree 17 (0,0=1; 1,1=0)}
-\begin{verbatim}
+
+Tree 17 (0,0=1; 1,1=0)
+
         [x2?]
        /     \
    x2=0       x2=1
@@ -198,10 +204,10 @@ x1=0    x1=1
   /     \    /     \
 (0,0) (1,0) (0,1) (1,1)
  (1)   (0)   (1)   (0)
-\end{verbatim}
 
-\textbf{Tree 18 (0,0=1; 1,1=1)}
-\begin{verbatim}
+
+Tree 18 (0,0=1; 1,1=1)
+
         [x2?]
        /     \
    x2=0       x2=1
@@ -209,4 +215,4 @@ x1=0    x1=1
   /     \    /     \
 (0,0) (1,0) (0,1) (1,1)
  (1)   (0)   (1)   (1)
-\end{verbatim}
+
