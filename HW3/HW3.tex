@@ -1,0 +1,329 @@
+\documentclass{exam}
+\usepackage[utf8]{inputenc}
+\usepackage{amsfonts}
+% \usepackage{gensymb}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{bm}
+\usepackage{ragged2e}
+\usepackage{hyperref}
+\usepackage{amsthm}
+\usepackage{verbatim}
+\usepackage{amsmath,dsfont,amssymb}
+\usepackage{enumerate}
+\usepackage{color}
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage{tikz-qtree}
+\usepackage{forest}
+\usepackage{url}
+\usepackage{float}
+
+
+% Custom definitions
+\def\mycolor{red}
+\def\Pr{\text{Pr}}
+\def\E{\text{E}}
+\def\V{\text{V}}
+\def\R{\mathbb{R}}
+\makeatletter
+\newcommand{\pushright}[1]{\ifmeasuring@#1\else\omit\hfill$\displaystyle#1$\fi\ignorespaces}
+\newcommand{\pushleft}[1]{\ifmeasuring@#1\else\omit$\displaystyle#1$\hfill\fi\ignorespaces}
+\makeatother
+
+\def\Rtrue{R^{\text{true}}}
+\def\Imp{\text{Imp}}
+\def\tree{\text{tree}}
+\def\rf{\text{rf}}
+\def\OOB{\text{OOB}}
+\def\T{\mathcal{T}}
+\def\F{\mathcal{F}}
+\def\one{\mathcal{T}}
+\def\v{\mathbf{v}}
+\def\k{\mathbf{k}}
+\def\q{\mathbf{q}}
+\def\c{\mathbf{c}}
+
+\DeclareMathOperator{\sign}{sgn}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\corr}{corr}
+
+\newcommand{\One}[1]{ \mathbbm{1}_{\left[#1\right]}}
+\newcommand{\sangle}[1]{\langle #1 \rangle}
+\newcommand{\abs}[1]{\left | #1 \right |}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\usepackage[skip=2pt,it]{caption}
+\title{Homework 3, Machine Learning, Fall 2025}
+\author{ }
+\date{}
+
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={CS 671 HW1 2024},
+    pdfpagemode=FullScreen,
+}
+
+
+\begin{document}
+\maketitle
+\textbf{*IMPORTANT* Homework Submission Instructions}
+\begin{enumerate}
+    \item All homeworks must be submitted in one PDF file to Gradescope. 
+    \item Please make sure to select the corresponding HW pages on Gradescope for each question.
+    \item For all coding components, complete the solutions with a Jupyter notebook/Google Colab, and export the notebook (including both code and outputs) into a PDF file. Concatenate the theory solutions PDF file with the coding solutions PDF file into one PDF file which you will submit. 
+    \item You must show work or give an explanation for every question. ``Yes'' and ``No'' are not sufficient answers. Always show the steps of your calculations. Only partial credit can be given if you do not explain your answer.
+    \item Failure to adhere to the above submission format may result in penalties.  
+\end{enumerate}
+
+\paragraph{} As a reminder, don’t wait until the last minute to ask for help, because the person you need to speak with might be dealing with many other students close to the deadline. Also, the teaching staff has been instructed that it is not mandatory for them to answer questions on the day the homework is due. So get your questions in early! \\
+
+You may collaborate on homework, but you must do your own work; we feel this is the best way to learn. If you get stuck, you are welcome to discuss conceptual issues with your classmates or the TAs but you may not copy any code, solutions or proof steps. Do not ask another classmate to perform coding for you. You can look at reference material on the Internet such as ChatGPT, but don’t look at that unless you are really stuck, and make sure your answer is complete - don’t write “Because I found a theorem that says the answer is X”. You must show your complete work for each question. You are required to state what references you used (if you used an outside source). If you've worked with anyone, write down their name below and make sure they've written your name on their homework as well. \textbf{Please copy the following statements at the top of your assignment file}: \\
+
+Agreement 1: This assignment represents my own work. I have worked with the following people and/or LLMs: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ \\
+
+
+\newpage
+
+\section{Convexity (Zack) - 35 pts }
+
+Convexity is a property of functions that makes optimization very nice. 
+In \textit{strictly} convex optimization, every local minimum is also a global minimum. 
+This makes solving for optimal solutions and running gradient descent much easier!
+In this problem, we'll explore convexity in detail.
+
+\vspace{3mm}
+
+\noindent Let's start with a few different ways to test if a function is \textit{convex}.
+A function $f: \R \to \R$ is convex if any one of the following conditions are met (these definitions are not necessarily equivalent):
+\begin{enumerate}
+    \item $\forall \lambda \in [0, 1],\  x, y \in \R,\  f(\lambda x + (1-\lambda) y) \leq \lambda f(x) + (1-\lambda)f(y)$. 
+    
+    \textbf{Any line drawn between two points on the function must lie on or above the function}.
+
+    \item $f$ is differentiable and, $\forall x, y \in \R, f(x) \geq f(y) + f'(y)(x-y)$.
+
+    \textbf{The graph of a convex function lies on or above all of its tangents}.
+
+    \item $f$ is twice differentiable and, $\forall x \in \R$, $f''(x) \geq 0$. 
+
+    \textbf{The graph of a convex function should never curve down}.
+\end{enumerate}
+Similar definitions apply if $f$ is a function of several variables. 
+The first definition stays the same. 
+In the second definition, the first derivative is replaced with the gradient transpose.
+In the third definition, the Hessian of $f$ is required to be \textit{positive semidefinite} (which means all eigenvalues are non-negative).
+
+\vspace{3mm}
+
+\noindent We will now examine various properties of convex functions to better understand some common loss functions.
+Assume that the domain and codomain of all functions is $\R$ unless stated otherwise. For the following problems, you may prove convexity using any definition above. Note: $f$ is \textit{concave} if $-f$ is convex.
+\begin{enumerate}[(a)]
+    \item \textbf{Additivity.}
+    Let $f$ and $g$ be \textbf{convex} functions. Show that $f+g$ is \textbf{convex}.
+
+    \item \textbf{Log Product.} Let $f_1, \ldots, f_k$ be \textbf{concave} functions, $f_i(x) \geq 0 \quad \forall x$.
+    Show that $\ln \left(\prod_{i=1}^k f_i \right)$ is \textbf{concave}.
+
+    \item \textbf{Affine Transformations.} Let $f: \R^m \to \R$ be a \textbf{convex} function, and let $A \in \R^{m \times n}, b \in \R^m$. Show that $f(Ax + b)$ is \textbf{convex}.
+
+    \item \textbf{Motivating minimum and maximum.} A line is both convex and concave. Draw four different lines in the Cartesian plane and highlight the minimum and maximum of all four lines for each $x$ in two different colors. These are called the lower and upper envelopes of the lines, respectively. What can you conclude about the lower and upper envelopes of lines in the plane?
+
+    \item \textbf{Maximum.} Let $f$ and $g$ be \textbf{convex} functions. Show that $\max(f, g)$ is \textbf{convex} or give a counterexample.
+
+    \item \textbf{Minimum.} Let $f$ and $g$ be \textbf{convex} functions. Show that $\min(f, g)$ is \textbf{convex} or \textbf{concave} or give a counterexample.
+
+    \item \textbf{Loss Functions.} We will now examine three common loss functions used for linear models. 
+    Let $\{(\bm{x}_i, y_i)\}_{i=1}^n$ be a dataset, $\bm{x}_i \in \R^d$, $y_i\in \{-1, 1\}$.
+    Assume that $\bm{\omega}$ and $b$ are the weights and bias term of a linear model.
+    Show that the following loss functions are \textbf{convex} with respect to the weights $\bm{\omega}$.
+    \begin{enumerate}[i.]
+        \item \textbf{Logistic Loss.} 
+        \begin{equation*}
+            L(\bm{\omega}, b) = \sum_{i=1}^n \log(1+e^{-y_i(\bm{\omega}^T \bm{x}_i + b)})
+        \end{equation*}
+         
+        \item  \textbf{Hinge Loss.}
+        \begin{equation*}
+            L(\bm{\omega}, b, C) = \frac{1}{2} \|\bm{\omega}\|^2_2 + C \sum_{i=1}^n \max(0, 1-y_i(\bm{\omega}^T \bm{x}_i + b)), \quad C\geq0
+        \end{equation*}
+
+        \item \textbf{LASSO Regression Loss.}
+        \begin{equation*}
+            L(\bm{\omega}, b, C) = \|\bm{y} -(X\bm{\omega} + b \bm{1}_n)\|^2_2 + C \|\bm{\omega}\|_1, \quad C\geq 0
+        \end{equation*}
+    \end{enumerate}
+\end{enumerate}
+
+
+
+\section{Attention (Theory) (Samarth) - 10 pts}
+Multi-headed self-attention is the core modeling component of transformers and other advanced architectures known as Large Language Models (LLMs). This question aims to improve our understanding of self-attention equations. We will use the following notation:
+
+\begin{itemize}
+    \item Query vector $\q \in \mathbb{R}^{d}$, where $d$ is the embedding dimension size hyperparameter. 
+    \item Set of value vectors $\mathcal{V} =\{ \v_1, \v_2, \v_3, \dots, \v_{|\mathcal{D}|}\},$ where $\v_i \in \mathbb{R}^{d}$ and $\mathcal{D}$ is the set of words in your model's dictionary/vocabulary.
+    \item Set of key vectors $\mathcal{K} = \{ \k_1, \k_2, \k_3,\dots, \k_{|\mathcal{D}|}\}$, where $\k_i\in \mathbb{R}^{d}$. 
+\end{itemize}
+
+\noindent Attention is an operation on query, value, and key vectors. Let's notate attention weights as
+
+$$\alpha_i = \frac{\exp(\k_i^T \q)}{\sum_{j=1}^{n} \exp(\k_j^T\q)},$$
+
+\noindent and let's represent a combined attention embedding as $$\c = \sum_{i=1}^{n} \v_i \alpha_i.$$
+    
+
+
+Let's consider a case where the transformer reads a sentence of $n$ words, yielding $n$ value vectors ($\v_1$, $\v_2$, \dots, $\v_n$) with the corresponding key vectors ($\k_1$, $\k_2$, \dots, $\k_n$). Let's assume the following:
+
+\begin{itemize}
+    \item The number of key vectors in our sentence is fewer than the number of dimensions ($n < d$)
+    \item All key vectors are \textbf{orthogonal} i.e, $\k_i^T\k_j = 0,\;\forall i \not= j$
+    \item All key vectors have \textbf{norm 1}, i.e., $\Vert \k_i \Vert_2 = 1, \;\forall i \in [1, n]$
+\end{itemize}
+
+\noindent In terms of $\k$, report the mathematical expression for a set of possible query vectors $\q$ such that $\c$ is the \textbf{average} over all vectors (i.e. $\c \approx \frac{1}{n} (\v_1 +\v_2 + \v_3 + \dots + \v_n)$). This should be true for any collection of $\v_1, \dots, \v_n$. Demonstrate all the steps and justify your answer. 
+
+
+\section{Transformers Implementation for GPTs (Coding) (Muchang) - 20 pts}
+
+Generative Pretrained Transformers (GPTs) have recently gained prominence as the state-of-the-art architecture for many NLP tasks. If you've ever used ChatGPT, as the name suggests, you've used a GPT model. In the following question, you will develop a \texttt{Pytorch} implementation of the multi-head attention layer of a lightweight GPT model. Using a preprocessed dataset of Shakespeare's plays with a character-level tokenization, you'll then train the model to generate novel Shakespearean text. 
+
+Before beginning to code, you will need to set up your environment. First, git clone this \href{https://github.com/mbahng/gpt2-pytorch}{repository} and create a \texttt{conda} environment with \texttt{numpy} (\texttt{conda install numpy}) and \texttt{torch} (\texttt{pip install torch}) installed. Make sure to activate it before you start. 
+
+Based on our experiments, the model \emph{should} be lightweight enough to be trained on a personal machine. As another option, you may also use your Google Cloud credits to reserve a VM on Google Cloud Platform (GCP) for this question. See the announcement on Ed for more details on obtaining credits. Alternatively, you can also reserve a VM through \href{https://vcm.duke.edu/apps/index}{Duke OIT}, though it may be less powerful than a GCP VM. 
+
+To briefly go over this repository, 
+\begin{enumerate}
+    \item \texttt{model.py} defines the actual transformer model that we will train. Note that a transformer model consists of multiple \textit{self-attention modules} which each consist of a \textit{self-attention layer} plus a simple \textit{multilayer perceptron} (MLP), including nonlinearities and normalization layers, which help with training. The \texttt{Block} class composes both the \texttt{SelfAttention} class and \texttt{MLP} class for another layer of abstraction. 
+    \item These decoder layer modules are stacked on top of each other within the transformer model, which you can see in the \texttt{transformer} attribute of the \texttt{Transformer} class. 
+    \item \texttt{train.py} is a script that will train the model. 
+    \item \texttt{sample.py} is a script that will generate text from the model. 
+\end{enumerate}
+
+To set up some notation, if the embedding dimension is $C$, and the sequence length is $L$, then a sequence of text inputs can be written as a matrix of shape $L \times C$, also called a \textit{rank 2 tensor}.\footnote{A scalar is a rank 0 tensor. A vector, which is an array of scalars, is a rank 1 tensor. A matrix, which is an array of vectors, is a rank 2 tensors. So on and so forth.} 
+
+To parallelize these operations, PyTorch supports \textit{batching} of inputs, allowing you to input a collection of $B$ matrices of shape $L \times C$, stored in a \textit{rank 3 tensor} of shape $B \times L \times C$, and performing the same operations on every single matrix at once. This also helps with parallelizing matrix multiplication (and other operatons) over higher order tensors. For example, if $A$ has shape $B_1 \times \ldots \times B_k \times L \times M$ and $B$ has shape $B_1 \times \ldots \times B_k \times M \times N$ , then $AB$ has shape $B_1 \times \ldots \times B_k \times L \times N$. We are essentially matrix multiplying over the last two ranks. You should get familiar with this concept of batching, as it will save you a lot of time and effort compared to using for loops. \textit{We do not recommend using for loops, as both the code tends to get messy and the runtime will be significantly slower.}
+
+\paragraph{(a)} To begin, we will first perform a quick sanity check to ensure your environment has been set up correctly: run the command \texttt{python sample.py} from the base of the repository to generate a sample of text. You should notice that the results just look like a random sequence of characters. There are two reasons for this: we haven't implemented the attention layer, nor have we trained the model.
+
+
+
+\paragraph{(b)}  Let's focus on the attention layer first. We will do this step by step by implementing the \texttt{forward} method in \texttt{SelfAttention} class in \texttt{model.py}. Recall that the formula for scaled-dot product single-headed attention is 
+\begin{equation} 
+  \mathrm{Attention}(Q, K, V) = \mathrm{softmax} \bigg( \frac{Q K^T}{\sqrt{C}} \bigg) V
+\end{equation} 
+where $Q, K, V$ are the query, key, value matrices, and the softmax operation is done over the \textit{rows} of the input matrix. Each of these steps should not take more than 10 lines of code each. We have provided an outline in the codebase as a guide, but you do not necessarily have to follow it. 
+
+\begin{enumerate}[i.]
+    \item The query, key, and value matrices are computed by \texttt{self.c\_attn}, which is a linear layer $\ell$ that maps each token $\mathbf{x}$ to its associated key, query, and value vectors through the map
+    \begin{equation}
+        \ell(\mathbf{x}; \mathbf{A}, \mathbf{b}) = \mathbf{A} \mathbf{x} + \mathbf{b} = \begin{pmatrix} \mathbf{q} \\ \mathbf{k} \\ \mathbf{v} \end{pmatrix}
+    \end{equation}
+    where $\mathbf{x} \in \mathbb{R}^{C}$, $\mathbf{A} \in \mathbb{R}^{3C \times C}$, and $\mathbf{b} \in \mathbb{R}^{3C}$. This is batched over the entire sequence length $L$ and over the $B$ batches for each sequence, so our output wouldn't be simply in $\mathbb{R}^{3C}$, but rather of size $B \times L \times 3C$. You want to take this output matrix of parameters and partition it into the query, key, value matrices, each of size $B \times L \times C$. 
+    
+    \item We want to implement \textit{multihead} attention by further partitioning each matrix into $H$ submatrices, where $H$ is the number of heads. $H$ is available as \texttt{self.n\_head} within the class. 
+    \begin{align*}
+        Q & \mapsto (Q_1, \ldots, Q_H) \\ 
+        K & \mapsto (K_1, \ldots, K_H) \\ 
+        V & \mapsto (V_1, \ldots, V_H)
+    \end{align*}
+    To implement multihead attention, we want to add an extra rank to change the shape of each matrix from $(B \times L \times C) \mapsto (B \times H \times L \times  C/H)$. Note that $H$ must evenly divide $C$ since we want to evenly partition the embedding dimension, so $C/H$ will always be an integer. The same logic should be looped through the $K$ and $V$ matrices as well. A visual is provided for some intuition. 
+
+    \begin{figure}[H]
+      \centering 
+      \includegraphics[scale=0.25]{2024 Examples/multihead_visual.png}
+      \caption{A visualization of how a single element of a batch, of shape $L \times C$, should be reshaped to shape $H \times L \times C/H$. You want to add an extra dimension by stacking these submatrices on top of each other. In the end, we should satisfy \texttt{Q[i, j, :, :].shape = (T, C // H)}.} 
+      \label{fig:multihead_visual}
+    \end{figure}
+    
+    \item Now we must actually implement the attention operation described in the equation above. First, implement only the operation 
+    \begin{equation}
+        \frac{Q_i K_i^T}{\sqrt{C/H}}
+    \end{equation} 
+    for all $i = 1, \ldots H$ over all $B$ batches (note that there is no index over batches notated, which is perhaps a fault of the notation, but this is common in transformer papers to leave out an index). Once this is done, your result should be of shape $B \times H \times L \times L$. 
+
+    \item We also need a masking step since this is a decoder architecture. We have provided a \texttt{self.mask} attribute consisting of a lower triangular matrix of $1$s. Use this to mask your output so that future tokens are ignored in the attention score. You might find the \texttt{torch.Tensor.masked\_fill()} operation helpful. 
+
+    \item Then, we can apply the softmax operation on the rows of each $L\times L$ matrix within each head and batch. After this should be a dropout layer, which we have implemented for you. Finally, we can multiply by the value matrix $V$ to get the head outputs $y$. After this step, the assertion statement that we have implemented on \texttt{y.shape} should hold true. 
+\end{enumerate}
+
+
+\paragraph{(c)} Train this model using the command \texttt{python train.py} and plot the loss curve over time. Note that training for 2000 epochs on Google Cloud is estimated to take between 5-20 minutes. You should allocate your time accordingly for training. 
+
+\paragraph{(d)} Generate a new brief Shakespearean text using the command \texttt{python sample.py} and post your output. Now you have learned the details of a minimal transformer architecture! 
+
+
+\section{Attention and Convolution (Coding) (James) - 35 pts}
+In this question, we will use the PyTorch framework to explore some properties of self-attention and some connections between self-attention and convolution\footnote{In this problem ``convolution'' refers to the operation used in convolutional neural networks. Formally, we are actually going to discuss cross-correlation, but the machine learning community refers to this operation as convolution by convention.}. First, we define the notion of a ``similarity metric'', which can be thought of as the opposite of a distance metric. Formally, we call a function $s: \mathbb{R}^{d \times d} \to \mathbb{R}$ a similarity metric if, for any $\mathbf{x}, \mathbf{y}, \mathbf{z} \in \mathbb{R}^d$:
+\begin{enumerate}
+    \item $s$ is bounded above by some value $b$: $s(\mathbf{x}, \mathbf{y}) \leq b$.
+    \item The similarity between an object and itself is the maximum similarity possible: $s(\mathbf{x}, \mathbf{x}) = b$
+    \item The similarity between two distinct objects is not the maximum similarity: $\mathbf{x} \neq \mathbf{y} \implies s(\mathbf{x}, \mathbf{y}) < b$
+    \item Similarity is symmetric: $s(\mathbf{x}, \mathbf{y}) = s(\mathbf{y}, \mathbf{x})$
+\end{enumerate}
+
+\paragraph{(a)} 
+When learning about convolution, you may have learned that it is similar to template matching, where we find the similarity between a template and an image at each location. In the first part of this problem, we will use the PyTorch package to visually explore whether convolution is computing a similarity function. First, recall the definition of convolution. For an input matrix $\mathbf{Z} \in \mathbb{R}^{d_{\text{in}} \times h_{\text{in}} \times w_{\text{in}}}$ and a learned tensor of $d_{\text{out}}$ convolutional filters $\mathbf{K} \in \mathbb{R}^{d_{\text{out}}\times d_{\text{in}} \times h_{\text{kernel}} \times w_{\text{kernel}}}$, the output of a simple 2 dimensional convolution at position $h, w$ for filter $j$ is:
+\begin{align}
+\label{eq:convolution}
+    (\mathbf{Z} * \mathbf{K})_{j, h, w} = \sum_{a=1}^{d_{\text{in}}}
+    \sum_{b=1}^{h_{\text{kernel}}}
+    \sum_{c=1}^{w_{\text{kernel}}}  k_{j,a,b,c} z_{a, h+b-\lfloor h_{\text{kernel}/2}\rfloor, w+c-\lfloor h_{\text{kernel}/2}\rfloor},
+\end{align}
+where the $*$ operator denotes convolving the first tensor with the second.
+For simplicity, in this problem we will consider convolution with $h_{\text{kernel}} = w_{\text{kernel}} = 1,$ simplifying Equation \ref{eq:convolution} to
+\begin{align}
+\label{eq:convolution_ez}
+    (\mathbf{Z} * \mathbf{K})_{j, h, w} = \sum_{a=1}^{d_{\text{in}}} k_{j,a,1, 1} z_{a, h, w}.
+\end{align}
+We will also consider $d_{\text{in}} = 3$ to be the RGB representation of a pixel at each location, allowing easy visualization. The starting notebook available at \href{https://colab.research.google.com/drive/15Bz5HiW1T0guSmcl6nLY8NJU9NH9vx7B?usp=sharing}{this link} provides an input tensor and a kernel tensor. Use this starting notebook to:
+\begin{enumerate}[i.]
+    \item Visualize the provided input tensor using Matplotlib's imshow function. Additionally, visualize each filter in the given ``kernels'' tensor as a separate subplot in one figure. Note that PyTorch and Matplotlib follow different conventions around the semantics of each axis in a tensor. In PyTorch, an image is represented with the channel dimension (e.g., RGB) first, followed by height and width. In Matplotlib, the convention is height and width followed by channel. To display torch tensors using matplotlib, you will need to reorder the axes using torch.permute such that the channel dimension comes last rather than first. Note that the color of each filter appears in the input tensor.
+    \item Use the PyTorch function \href{https://pytorch.org/docs/stable/generated/torch.nn.functional.conv2d.html}{torch.nn.functional.conv2d} to convolve the given input tensor with the given kernels. This should produce an output tensor in $\mathbb{R}^{d_{\text{out}} \times h_{\text{in}} \times w_{\text{in}}}.$ Display the activation map for each kernel as a subplot of one plot, i.e., produce $d_{\text{out}}$ subplots of shape $h_{\text{in}} \times w_{\text{in}}.$ Based on these visualizations, you should notice that the entries in these matrices are not produced by a similarity function. State which  of the rules for similarity functions is violated and how you know.
+    \item Let's take a moment to consider something that \textit{is} a similarity function. For two vectors $\mathbf{x}, \mathbf{y} \in \mathbb{R}^d$, the cosine similarity between $\mathbf{x}$ and $\mathbf{y}$ is defined to be:
+    \begin{align}
+        \text{CosSim}(\mathbf{x}, \mathbf{y}) := \cos(\theta(\mathbf{x}, \mathbf{y})),
+    \end{align}
+    where $\theta: \mathbb{R}^{d \times d} \to [0, 2\pi)$ is a function that gets the angle between two vectors. Prove that CosSim is a similarity metric. Hint: $\theta$ is a distance metric.
+    
+    \item Implement CosSim using a processing step on $\mathbf{Z}$ and $\mathbf{K}$ and torch.nn.functional.conv2d; that is, perform a transformation $T$ on $\mathbf{Z}$ and $\mathbf{K}$ such that $(\bar{\mathbf{Z}} * \bar{\mathbf{K}})_{j, h, w}$ computes a cosine similarity, where $\bar{\mathbf{Z}} = T(\mathbf{Z})$ and $\bar{\mathbf{K}} = T(\mathbf{K})$. Display the activation map for each kernel. Do the activation maps reflect a similarity function? What is the difference between what you just implemented and a normal convolution? Hint: Recall that $\mathbf{x}^T \mathbf{y} = \|\mathbf{x}\|_2 \|\mathbf{y}\|_2 \cos(\theta(\mathbf{x}, \mathbf{y})).$
+\end{enumerate}
+
+\paragraph{(b)} 
+We now attend to attention. Recall the definition of dot product attention as computed in \href{https://arxiv.org/pdf/1706.03762.pdf}{``Attention is All You Need''}. For matrices $\mathbf{Q}, \mathbf{K}, \mathbf{V} \in \mathbb{R}^{w_{\text{in}} \times d_{\text{in}}},$ we have
+\begin{equation}
+\label{eq:attention}
+    \text{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) := \text{softmax}\left( \frac{\mathbf{Q} \mathbf{K}^T}{\sqrt{d_{\text{in}}}}\right)\mathbf{V}.
+\end{equation}
+In the simplest form of self-attention, an input matrix $\mathbf{Z} \in \mathbb{R}^{w_{\text{in}} \times d_{\text{in}}}$ is passed as all three arguments, i.e.
+\begin{align*}
+    \text{SimpleSelfAttention}(\mathbf{Z}) := \text{Attention}(\mathbf{Z},\mathbf{Z},\mathbf{Z}) &= \text{softmax}\left( \frac{\mathbf{Z} \mathbf{Z}^T}{\sqrt{d_{\text{in}}}}\right)\mathbf{Z}.
+\end{align*}
+
+\begin{enumerate}
+    \item Note that you were given an input image in $\mathbb{R}^{d_{in} \times h_{in} \times w_{in}},$ which does not quite line up with the dimensions expected for attention. Flatten the given input into a matrix of shape ($d_{in}$, $h_{in}w_{in}$), transpose the resulting matrix to shape ($h_{in}w_{in}$, $d_{in}$), and use it to compute $\mathbf{Z}\mathbf{Z}^T.$ Visualize the resulting matrix with imshow. Based on this visualization, could the entries in the resulting matrix be produced by a similarity function? State whether one of the rules for similarity functions is violated and how you know.
+    \item Compute $\text{softmax} \left( 
+    \frac{\mathbf{Z}\mathbf{Z}^T}{\sqrt{d_{\text{in}}}}\right),$ and visualize the resulting matrix. Based on this visualization, could the entries in this matrix be produced by a similarity function? State whether a rule for similarity metrics is violated and how you know.
+    \item Let $\bar{\mathbf{Z}}:=\begin{bmatrix}
+        1/\|\mathbf{z}_{1, :}\|_2 & 0 & \hdots & 0\\
+        0 & 1/\|\mathbf{z}_{2, :}\|_2 & \hdots & 0\\
+        \vdots & & & \vdots\\
+        0 & 0 & \hdots & 1/\|\mathbf{z}_{ h_{in} \times w_{in}, :}\|_2
+    \end{bmatrix}.$ So the resulting matrix $\Bar{\mathbf{Z}}$ should be in the shape of $(h_{in} \times w_{in}, h_{in} \times w_{in})$. Finally, compute $\text{softmax}\left( 
+    \frac{\bar{\mathbf{Z}}(\mathbf{Z}\mathbf{Z}^T) \bar{\mathbf{Z}}}{\sqrt{d_{\text{in}}}}\right),$ and visualize the resulting matrix (Note: The softmax should be applied across the resulting matrix, so you should flatten it before applying the softmax operation in PyTorch and reshape it after). Based on this visualization, could the entries in this matrix be produced by a similarity function? State whether one of the rules for similarity functions is violated and how you know.
+
+    \item Based on the prior questions, you can see a connection between attention and convolution. Implement the function $f(\mathbf{Z}) := \frac{\bar{\mathbf{Z}}(\mathbf{Z}\mathbf{Z}^T) \bar{\mathbf{Z}}}{\sqrt{d_{\text{in}}}}$ using a convolution; reshape the output to a matrix of the appropriate size, and visualize the result. Hint: Recall that $
+    \frac{\bar{\mathbf{Z}}(\mathbf{Z}\mathbf{Z}^T) \bar{\mathbf{Z}}}{\sqrt{d_{\text{in}}}} \in \mathbb{R}^{w_{\text{in}}h_{\text{in}} \times w_{\text{in}}h_{\text{in}}}$ and $(\mathbf{Z} * \mathbf{K}) \in \mathbb{R}^{d_{\text{out}} \times h_{\text{in}} \times w_{\text{in}}}.$ How many convolutional kernels will you need to make these dimensions match?
+\end{enumerate}
+
+
+
+
+\end{document}
